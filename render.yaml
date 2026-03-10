@@ -1,0 +1,43 @@
+services:
+  # Web Service (PHP Apache)
+  - type: web
+    name: elib-web
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: frankfurt
+    healthCheckPath: /healthcheck.php
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: elib-db
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: elib-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: elib-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: elib-db
+          property: password
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+    disk:
+      name: elib-uploads
+      mountPath: /var/www/html/uploads
+      sizeGB: 1
+
+  # MySQL Database
+databases:
+  - name: elib-db
+    databaseName: elib_database
+    user: elib_user
+    plan: free
+    region: frankfurt

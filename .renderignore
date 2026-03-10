@@ -1,0 +1,55 @@
+# Render ignore file - files to exclude from deployment
+
+# Development files
+.git/
+.gitignore
+.vscode/
+.idea/
+.kiro/
+
+# Documentation (keep only essential)
+DIAGNOSTIC.md
+SETUP.md
+
+# Test files
+tests/
+phpinfo_test.php
+admin/test_*.php
+admin/diagnostic.php
+admin/check_extensions.php
+admin/error_extensions.php
+admin/fix_pdo_auto.php
+
+# Local configuration
+config/database.xampp.php
+docker-compose*.yml
+Dockerfile
+.dockerignore
+Makefile
+
+# Logs (will be recreated)
+logs/*.log
+logs/*.txt
+
+# Backups (will be recreated)
+backups/*.sql
+backups/*.zip
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if any)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local

@@ -1,0 +1,49 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Trigger Render deployment
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+            curl -X POST "$RENDER_DEPLOY_HOOK"
+            echo "✅ Render deployment triggered"
+          else
+            echo "⚠️  RENDER_DEPLOY_HOOK not configured"
+            echo "Add it in: Settings → Secrets → Actions"
+          fi
+      
+      - name: Wait for deployment
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          sleep 30
+      
+      - name: Health check
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+        run: |
+          if [ -n "$APP_URL" ]; then
+            response=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/healthcheck.php")
+            if [ "$response" = "200" ]; then
+              echo "✅ Health check passed"
+            else
+              echo "❌ Health check failed with status: $response"
+              exit 1
+            fi
+          else
+            echo "⚠️  APP_URL not configured, skipping health check"
+          fi

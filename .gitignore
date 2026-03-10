@@ -1,0 +1,41 @@
+# Environment
+.env
+
+# Uploads
+uploads/books/*.epub
+uploads/books/*.pdf
+uploads/covers/*.jpg
+uploads/covers/*.png
+uploads/covers/*.jpeg
+
+# Logs
+logs/*.log
+logs/*.txt
+
+# Backups
+backups/*.sql
+backups/*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Docker
+docker-compose.override.yml
+
+# Keep directory structure
+!uploads/books/.htaccess
+!uploads/covers/.htaccess
+!logs/.htaccess
+!backups/.htaccess

@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # PHP Apache Web Server
+  web:
+    build: .
+    container_name: elib-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./logs:/var/www/html/logs
+      - ./backups:/var/www/html/backups
+    environment:
+      - DB_HOST=db
+      - DB_NAME=elib_database
+      - DB_USER=elib_user
+      - DB_PASS=elib_password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - elib-network
+    restart: unless-stopped
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: elib-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: elib_database
+      MYSQL_USER: elib_user
+      MYSQL_PASSWORD: elib_password
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./config/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./config/security_schema.sql:/docker-entrypoint-initdb.d/02-security_schema.sql
+    networks:
+      - elib-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin (optional, for database management)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: elib-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root_password
+      UPLOAD_LIMIT: 100M
+    depends_on:
+      - db
+    networks:
+      - elib-network
+    restart: unless-stopped
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  elib-network:
+    driver: bridge

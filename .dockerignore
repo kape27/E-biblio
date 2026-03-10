@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+.kiro
+
+# Documentation
+*.md
+!README.md
+
+# Logs
+logs/*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Backups
+backups/*.sql
+backups/*.zip
+
+# Test files
+tests/
+phpinfo_test.php

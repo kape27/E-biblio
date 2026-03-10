@@ -1,0 +1,43 @@
+version: '3.8'
+
+# Production Docker Compose Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  web:
+    restart: always
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    # Remove phpMyAdmin in production
+    # Comment out the phpmyadmin service below
+
+  db:
+    restart: always
+    # Use secrets for sensitive data in production
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
+    # Limit resources
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  # Disable phpMyAdmin in production for security
+  # phpmyadmin:
+  #   profiles:
+  #     - debug
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_password:
+    file: ./secrets/db_password.txt
