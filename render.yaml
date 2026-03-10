@@ -29,12 +29,8 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
-    disk:
-      name: elib-uploads
-      mountPath: /var/www/html/uploads
-      sizeGB: 1
 
-  # MySQL Database
+# MySQL Database
 databases:
   - name: elib-db
     databaseName: elib_database
